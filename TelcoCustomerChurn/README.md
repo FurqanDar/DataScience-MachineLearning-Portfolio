@@ -2,7 +2,7 @@
 
 Telecommunation companies lose significant revenue when customers cancel their subscriptions and possibly switch to competitors - called _churn_.
 
-Challenge: Aquiring new customers is usually more costly than retaining existing customers and improving their LTV.
+Challenge: Aquiring new customers is usually more costly than retaining existing customers and improving their life-time value (LTV).
 Objective: Identify top drivers for customer churn, and provide a measure of churn risk so that we can effectively target them for retention.
 Business Goal: Enable targeted retention campaigns to reduce churn.
 
