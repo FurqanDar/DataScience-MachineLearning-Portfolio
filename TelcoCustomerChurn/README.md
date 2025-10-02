@@ -1,8 +1,10 @@
-# Introduction
+# Business Problem
 
-## Business Problem
+Telecommunation companies lose significant revenue when customers cancel their subscriptions and possibly switch to competitors - called _churn_.
 
-We want to predict customers who are likely to churn, and identify the top drivers of churn, so that we can target them for retention.
+Challenge: Aquiring new customers is usually more costly than retaining existing customers and improving their LTV.
+Objective: Identify top drivers for customer churn, and provide a measure of churn risk so that we can effectively target them for retention.
+Business Goal: Enable targeted retention campaigns to reduce churn.
 
 
 ## Data Preparation (ETL)
@@ -15,27 +17,36 @@ We want to predict customers who are likely to churn, and identify the top drive
 
 # Approach
 
-Treat the data as a classification problem with imbalanced classes.
+Since churn is a clearly defined target variable, we can treat the problem as a supervised classification problem with imbalanced classes.
 
 
 ## Exploratory Data Analysis (EAD)
 
 Use mutual information to get an overview of important/unimportant features. Assess Churn characterstics for [top features](#churnmutualinfo):
 
-- Customers with month-to-month contracts churn $\sim14\times$ more than 2-Year contract customers.
-- Customers with Fiber Optic internet churn $\sim5\times$ more than those without internet service.
+- Customers with month-to-month contracts churn $\sim14\times$ [more](#eadcontract) than 2-Year contract customers.
+- Customers with Fiber Optic internet churn $\sim5\times$ [more](#eadinternetservice) than those without internet service.
 - Longer-term customers are less and less likely to churn the longer their tenure grows.
 
-## Training Classification Models
+## Modeling
 
-
-## Evaluating Models
+- Logistic regression with correctly scaled numeric features for easy interpretability and speed.
+    -  Use classes weighted with base rates.
+-  XGBoost with tuned hyper parameters for a generally robust classifier.
+    -  Use classes weighted with base rates.
+ 
+For both models, use balanced_accuracy and ROC-AUC as evaluation metrics.
 
 # Results
 
+- Both Logistic Regression and XGBoost perform [similarly](#rocauc) well: ROC-AUC = 0.85
+    - Achieved 2$\times$ lift at top 40% as a threshold.
+- Deploy Logistic Regression in production for interpretability and speed.
+    - Use XGBoost for validating conclusions on test data sets.
+
 ## Business Recommendations 
 
-[Primary drivers](#logisticfeatureweights) for churn are month-to-month contracts, monthly charges, fiber-optic internet, and paperless billing. Primary drivers of retention are no internet service, 2-year contracts, total charges
+[Primary drivers](#logisticfeatureweights) for churn are month-to-month contracts, monthly charges, fiber-optic internet, and paperless billing. Primary drivers of retention are no internet service, 2-year contracts, total charges. 
 
 - Target month-to-month contract customers with deals to encourage 2-Year contracts.
 - Offer discounts/loyalty deals to customers that bundle fiber-optic internet.
@@ -46,16 +57,35 @@ Use mutual information to get an overview of important/unimportant features. Ass
 
 ### Simulated ROI
 
-Target top $40\%$ of the highest-risk customers with discounts/deals or loyalty offers. Assuming that revenue is $\pu{50\$/Customer}$, and the cost of the ads-campaign is $\pu{10\$/Customer}$, we can expect a [profit](#profitscurve) of $\approx\pu{27.4\$/Customer}$ if $43.2\%$ of the highest predicted churn customers are targeted.
+Target top $40\%$ of the highest-risk customers with discounts/deals or loyalty offers. Assuming that revenue is $50\$/$Customer, and the cost of the ads-campaign is $10\$/$Customer, we can expect a [profit](#profitscurve) of $\approx27.4\$/$Customer if $43.2\%$ of the highest predicted churn customers are targeted, and they all respond positively.
 
 
 # Appendix
+
+## Preprocessing & Model Training
+
+- For logistic regression, scaled numeric features with a quantile transformer to get feature values closer to a normal distribution.
+- One-hot encode the categorical features.
+- Split the total data into training (60%) and validation (40%) sets.
+- Use Stratified-K-Fold CV for logistic regression.
+- Use early stopping in XGBoost by using validation set and 10 steps.
 
 ## Feature Importance
 
 | <img alt="Feature importance assessed by mutual information." src="./reports/churn_mutual_information.png" width="75%" name="churnmutualinfo"> |
 |:--|
 | *Assessing potentially important features with mutual information.* |
+
+## EAD
+
+| <img alt="Contract type drives churn - bar chart" src="./reports/ead_barchart_contract.png" width="75%" name="eadcontract"> |
+|:--|
+| *Contract type drives churn.* |
+
+
+| <img alt="Internet service type drives churn - bar chart" src="./reports/ead_barchart_internetservice.png" width="75%" name="eadinternetservice"> |
+|:--|
+| *Internet service type drives churn.* |
 
 
 ## Model Training
