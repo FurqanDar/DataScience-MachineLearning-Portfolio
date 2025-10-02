@@ -39,6 +39,8 @@ For both models, use balanced_accuracy and ROC-AUC as evaluation metrics.
 
 # Results
 
+## Model Evaluation
+
 - Both Logistic Regression and XGBoost perform [similarly](#rocauc) well: ROC-AUC = 0.85
     - Achieved 2$\times$ lift at top 40% as a threshold.
 - Deploy Logistic Regression in production for interpretability and speed.
@@ -57,7 +59,7 @@ For both models, use balanced_accuracy and ROC-AUC as evaluation metrics.
 
 ### Simulated ROI
 
-Target top $40\%$ of the highest-risk customers with discounts/deals or loyalty offers. Assuming that revenue is $50\$/$Customer, and the cost of the ads-campaign is $10\$/$Customer, we can expect a [profit](#profitscurve) of $\approx27.4\$/$Customer if $43.2\%$ of the highest predicted churn customers are targeted, and they all respond positively.
+Target top $40\%$ of the highest-risk customers with discounts/deals or loyalty offers. Assuming that revenue is $50\$/$Customer, and the cost of the ads-campaign is $10\$/$Customer, we can expect a [profit](#profitscurve) of $\approx27.4\$/$Customer if $43.2\%$ of the highest predicted churn customers are targeted, and they all respond positively. [Breakeven](#profitscurveloresponse) at about 40% response to ads-campaign.
 
 
 # Appendix
@@ -102,7 +104,6 @@ Target top $40\%$ of the highest-risk customers with discounts/deals or loyalty 
 |:--|
 | *Model lift curves.* |
 
-
 ## Feature Weights
 
 ### Logistic Regression
@@ -112,12 +113,22 @@ Target top $40\%$ of the highest-risk customers with discounts/deals or loyalty 
 | *Drivers of retention and churn determined by logistic regression.* |
 
 ### XGBoost
-| <img alt="Logistic regression weights" src="./reports/logistic_feature_weights.png" width="75%" name="xgboostweights"> |
+
+| <img alt="XGBoost feature average gain" src="./reports/xgboost_gain.png" width="75%" name="xgboostweights"> |
 |:--|
 | *Drivers of churn determined by xgboost.* Shows agreement with [logistic regression](#logisticfeatureweights).|
 
 ## Simulated ROI
 
+## Perfect Response
+
 | <img src="./reports/profit_curve.png" alt="Simulated profits curve." width="75%" name="profitscurve"> |
 |:---|
-| *Simulated Profits Curve.* |
+| *Simulated profits curve with perfect response.* |
+
+
+## Conservative Response
+
+| <img src="./reports/profit_curve_loresponse.png" alt="Simulated profits curve with a conservative response." width="75%" name="profitscurveloresponse"> |
+|:---|
+| *Simulated profits curve with conservative response.* |
